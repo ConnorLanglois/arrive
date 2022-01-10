@@ -301,7 +301,7 @@ var Arrive = (function(window, $, undefined) {
           utils.checkChildNodesRecursively(newNodes, registrationData, nodeMatchFunc, callbacksToBeCalled);
         }
         else if (mutation.type === "attributes") {
-          if (nodeMatchFunc(targetNode, registrationData, callbacksToBeCalled)) {
+          if (nodeMatchFunc(targetNode, registrationData, callbacksToBeCalled, mutation.type)) {
             callbacksToBeCalled.push({ callback: registrationData.callback, elem: targetNode });
           }
         }
@@ -310,15 +310,17 @@ var Arrive = (function(window, $, undefined) {
       });
     }
 
-    function nodeMatchFunc(node, registrationData, callbacksToBeCalled) {
+    function nodeMatchFunc(node, registrationData, callbacksToBeCalled, mutation) {
       // check a single node to see if it matches the selector
       if (utils.matchesSelector(node, registrationData.selector)) {
         if(node._id === undefined) {
           node._id = arriveUniqueId++;
         }
         // make sure the arrive event is not already fired for the element
-        if (registrationData.firedElems.indexOf(node._id) == -1) {
-          registrationData.firedElems.push(node._id);
+        if (registrationData.firedElems.indexOf(node._id) == -1 || mutation === 'attributes') {
+          if (registrationData.firedElems.indexOf(node._id) == -1) {
+            registrationData.firedElems.push(node._id);
+          }
 
           return true;
         }
