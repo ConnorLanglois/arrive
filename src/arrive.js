@@ -211,7 +211,7 @@ var Arrive = (function(window, $, undefined) {
       var elements = utils.toElementsArray(this);
       eventsBucket.removeEvent(function(eventObj) {
         for (var i = 0; i < elements.length; i++) {
-          if (this === undefined || eventObj.target === elements[i]) {
+          if (eventObj.target === elements[i]) {
             return true;
           }
         }
@@ -227,7 +227,7 @@ var Arrive = (function(window, $, undefined) {
       if (typeof selector === "function") {
         compareFunction = function(eventObj) {
           for (var i = 0; i < elements.length; i++) {
-            if ((this === undefined || eventObj.target === elements[i]) && eventObj.callback === callback) {
+            if ((eventObj.target === elements[i]) && eventObj.callback === callback) {
               return true;
             }
           }
@@ -237,7 +237,7 @@ var Arrive = (function(window, $, undefined) {
       else {
         compareFunction = function(eventObj) {
           for (var i = 0; i < elements.length; i++) {
-            if ((this === undefined || eventObj.target === elements[i]) && eventObj.selector === selector) {
+            if ((eventObj.target === elements[i]) && eventObj.selector === selector) {
               return true;
             }
           }
@@ -251,7 +251,7 @@ var Arrive = (function(window, $, undefined) {
       var elements = utils.toElementsArray(this);
       eventsBucket.removeEvent(function(eventObj) {
           for (var i = 0; i < elements.length; i++) {
-            if ((this === undefined || eventObj.target === elements[i]) && eventObj.selector === selector && eventObj.callback === callback) {
+            if ((eventObj.target === elements[i]) && eventObj.selector === selector && eventObj.callback === callback) {
               return true;
             }
           }
