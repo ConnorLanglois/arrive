@@ -271,6 +271,7 @@ var Arrive = (function(window, $, undefined) {
     // Default options for 'arrive' event
     var arriveDefaultOptions = {
       fireOnAttributesModification: false,
+      attributes: undefined,
       onceOnly: false,
       existing: false
     };
@@ -284,6 +285,8 @@ var Arrive = (function(window, $, undefined) {
 
       if (options.fireOnAttributesModification) {
         config.attributes = true;
+        config.attributeOldValue = true;
+        config.attributeFilter = options.attributes;
       }
 
       return config;
@@ -301,7 +304,7 @@ var Arrive = (function(window, $, undefined) {
           utils.checkChildNodesRecursively(newNodes, registrationData, nodeMatchFunc, callbacksToBeCalled);
         }
         else if (mutation.type === "attributes") {
-          if (nodeMatchFunc(targetNode, registrationData, callbacksToBeCalled, mutation.type)) {
+          if (nodeMatchFunc(targetNode, registrationData, callbacksToBeCalled, mutation)) {
             callbacksToBeCalled.push({ callback: registrationData.callback, elem: targetNode });
           }
         }
@@ -312,12 +315,16 @@ var Arrive = (function(window, $, undefined) {
 
     function nodeMatchFunc(node, registrationData, callbacksToBeCalled, mutation) {
       // check a single node to see if it matches the selector
-      if (utils.matchesSelector(node, registrationData.selector)) {
+      if (utils.matchesSelector(node, registrationData.selector) && !(
+        mutation
+        && mutation.type === 'attributes'
+        && mutation.target.getAttribute(mutation.attributeName) === mutation.oldValue
+      )) {
         if(node._id === undefined) {
           node._id = arriveUniqueId++;
         }
         // make sure the arrive event is not already fired for the element
-        if (registrationData.firedElems.indexOf(node._id) == -1 || mutation === 'attributes') {
+        if (registrationData.firedElems.indexOf(node._id) == -1 || mutation && mutation.type === 'attributes') {
           if (registrationData.firedElems.indexOf(node._id) == -1) {
             registrationData.firedElems.push(node._id);
           }
